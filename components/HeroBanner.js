@@ -5,7 +5,7 @@ export function HeroBanner({ src, width, height, className }) {
     <Image
       src={src}
       alt=""
-      className={`w-full h-64 object-cover mt-4 mb-6 rounded-lg ${className}`}
+      className={`w-full h-50 object-cover mt-4 mb-6 rounded ${className}`}
       width={width}
       height={height}
       priority
