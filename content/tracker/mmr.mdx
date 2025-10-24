@@ -1,0 +1,45 @@
+# How is MMR calculated?
+
+Inhouse Tracker calculates MMR with a very simple point system.
+Each inhouse a player joins can contribute to their MMR.
+You gain 50 points for playing a game and 30 points if you win.
+Additionally, you can gain an extra 10 points for each milestone you cross in your game.
+A player's MMR is a sum of the points they have earned in their last 10 games.
+
+The milestones considered for bonuses are outlined below in their programmatic form.
+
+```js
+function basePoints(p: ParticipantPerformanceFull) {
+  return 5 + (p.win ? 3 : 0);
+}
+
+function milestonePoints(p: ParticipantPerformanceFull, minutes: number) {
+  let m = 0;
+
+  if (p.utility.visionScore >= 60) m++;
+  if (p.utility.visionScorePerMinute >= 1.5) m++;
+  if (p.utility.wardsPlaced + p.utility.wardsKilled >= 30) m++;
+  if (p.utility.saveAllyFromDeath >= 1) m++;
+  if (p.assists >= 25) m++;
+  if (p.fun.controlWardsPlaced >= 5) m++;
+
+  if (p.jungling.riftHeraldTakedowns >= 1) m++;
+  if (p.jungling.initialBuffCount >= 3) m++;
+  if (p.jungling.scuttleCrabKills >= 4) m++;
+  if (p.jungling.objectivesStolen >= 1 || p.jungling.epicMonsterSteals >= 1)
+    m++;
+
+  if (p.structures.turretPlatesTaken >= 3) m++;
+
+  if (p.kda >= 5) m++;
+  if (p.deaths <= 1) m++;
+  if (p.combat.pentaKills >= 1) m++;
+  if (p.combat.soloKills >= 2) m++;
+  if ((p.totalMinionsKilled + p.neutralMinionsKilled) / minutes >= 8) m++;
+  if (p.laning.firstBloodKill || p.laning.firstBloodAssist) m++;
+
+  return m;
+}
+
+const pointsEarned = (basePoints(p) + milestonePoints(p, minutes)) * 10;
+```
